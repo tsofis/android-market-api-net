@@ -12,6 +12,9 @@ namespace AndroidMarketApi
 {
     public sealed class MarketSession
     {
+      private const string LoginUrl = "https://www.google.com/accounts/ClientLogin";
+      private const string ApiRequestUrl = "http://android.clients.google.com/market/api/ApiRequest";
+
         public MarketSession()
         {
             Context = new RequestContext
@@ -111,7 +114,7 @@ namespace AndroidMarketApi
 
         private static string HttpAuthenticate(string accountType, string email, string password)
         {
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(new Uri(Constant.Url.Login));
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(new Uri(LoginUrl));
 
             req.Method = "POST";
             req.ContentType = "application/x-www-form-urlencoded";
@@ -176,7 +179,7 @@ namespace AndroidMarketApi
 
         private Response SubmitHttpRequest(Request request)
         {
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(new Uri(Constant.Url.ApiRequest));
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(new Uri(ApiRequestUrl));
             req.Method = "POST";
             req.ContentType = "application/x-www-form-urlencoded";
             req.Accept = "text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2";
