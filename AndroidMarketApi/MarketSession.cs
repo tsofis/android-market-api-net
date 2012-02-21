@@ -183,12 +183,17 @@ namespace AndroidMarketApi
       req.Method = "POST";
       req.ContentType = "application/x-www-form-urlencoded";
       req.Accept = "text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2";
+      
       req.UserAgent = "Android-Market/2 (sapphire PLAT-RC33); gzip";
 
-      req.Headers.Add("Accept-Charset", "ISO-8859-1,utf-8;q=0.7,*;q=0.7");
+      req.Headers.Add(HttpRequestHeader.AcceptCharset, "ISO-8859-1,utf-8;q=0.7,*;q=0.7");
+
+      req.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip,deflate");
+      req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
       req.CookieContainer = new CookieContainer();
       req.CookieContainer.Add(new Cookie("ANDROID", AuthSubToken) { Domain = "android.clients.google.com" });
+
 
       string requestData = GetParams(request);
 
@@ -199,14 +204,14 @@ namespace AndroidMarketApi
 
       Stream postDataStream = req.GetRequestStream();
       postDataStream.Write(requestBuffer, 0, requestBuffer.Length);
+      postDataStream.Flush();
       postDataStream.Close();
 
       HttpWebResponse response = (HttpWebResponse)req.GetResponse();
 
       Stream stream = response.GetResponseStream();
-      var res = new GZipStream(stream, CompressionMode.Decompress);
-
-      return Serializer.Deserialize<Response>(res);
+      
+      return Serializer.Deserialize<Response>(stream);
     }
 
     #endregion
